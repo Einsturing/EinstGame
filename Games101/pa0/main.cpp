@@ -1,11 +1,12 @@
-#include<cmath>
-#include<eigen3/Eigen/Core>
-#include<eigen3/Eigen/Dense>
-#include<iostream>
+#include <cmath>
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Dense>
+#include <iostream>
 
 #define _USE_MATH_DEFINES
 
-int main() {
+int main()
+{
     // Basic Example of cpp
     std::cout << "Example of cpp \n";
     float a = 1.0, b = 2.0;

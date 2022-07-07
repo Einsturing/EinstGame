@@ -85,9 +85,7 @@ void rst::rasterizer::draw(pos_buf_id pos_buffer, ind_buf_id ind_buffer, col_buf
                 mvp * to_vec4(buf[i[2]], 1.0f)
         };
         //Homogeneous division
-        for (auto& vec : v) {
-            vec /= vec.w();
-        }
+        for (auto& vec : v) vec /= vec.w();
         //Viewport transformation
         for (auto & vert : v)
         {
@@ -116,7 +114,8 @@ void rst::rasterizer::draw(pos_buf_id pos_buffer, ind_buf_id ind_buffer, col_buf
 }
 
 //Screen space rasterization
-void rst::rasterizer::rasterize_triangle(const Triangle& t) {
+void rst::rasterizer::rasterize_triangle(const Triangle& t)
+{
     auto v = t.toVector4();
     // Find out the bounding box of current triangle.
     // iterate through the pixel and find if the current pixel is inside the triangle
@@ -128,23 +127,28 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t) {
     miny = static_cast<int>(std::floor(miny));
     maxx = static_cast<int>(std::ceil(maxx));
     maxy = static_cast<int>(std::ceil(maxy));
-    std::vector<Eigen::Vector2f> pos {
+    std::vector<Eigen::Vector2f> pos
+    {
         {0.25, 0.25},
         {0.75, 0.25},
         {0.25, 0.75},
         {0.75, 0.75}
     };
-    for(int i = minx; i <= maxx; i++) {
-        for(int j = miny; j <= maxy; j++) {
+    for(int i = minx; i <= maxx; i++)
+    {
+        for(int j = miny; j <= maxy; j++)
+        {
             int cnt = 0;
             for(int MSAA_4 = 0; MSAA_4 < 4; MSAA_4++) if(insideTriangle(static_cast<float>(i+pos[MSAA_4][0]), static_cast<float>(j+pos[MSAA_4][1]),t.v)) cnt++;
-            if(cnt) {
+            if(cnt)
+            {
                 auto [alpha, beta, gamma] = computeBarycentric2D(static_cast<float>(i + 0.5), static_cast<float>(j + 0.5), t.v);
                 float w_reciprocal = 1.0 / (alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
                 float z_interpolated = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
                 z_interpolated *= w_reciprocal;
                 // set the current pixel (use the set_pixel function) to the color of the triangle (use getColor function) if it should be painted.
-                if(depth_buf[get_index(i, j)] > z_interpolated) {
+                if(depth_buf[get_index(i, j)] > z_interpolated)
+                {
                     depth_buf[get_index(i, j)] = z_interpolated;
                     Eigen::Vector3f color = t.getColor();
                     Eigen::Vector3f point;
